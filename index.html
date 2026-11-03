@@ -421,7 +421,9 @@ function enviar(){
       sent = {sig:sigAhora,ts:Date.now(),k:j.k,files:[j.archivoPersona,j.archivoGeneral]}; store.set(K_SENT,sent);
       if(j.carpetaUrl) store.set('pd:carpeta',j.carpetaUrl);
     }).catch(function(e){
-      alert(e && e.message==='clave' ? 'La clave del equipo no es correcta.' : 'No pude enviar el pedido. Revisá tu conexión e intentá de nuevo.');
+      console.error('Error al enviar el pedido:',e);
+      var det = e && e.message ? e.message : String(e);
+      alert(det==='clave' ? 'La clave del equipo no es correcta.' : 'No pude enviar el pedido.\n\nDetalle técnico: '+det);
     }).then(function(){ btn.textContent='Enviar pedido'; renderMio(); refresh() });
     return;
   }
@@ -458,7 +460,9 @@ function api(accion,datos,reintento){
   var body = {accion:accion, clave:store.get('pd:clave','')};
   Object.keys(datos||{}).forEach(function(k){ body[k]=datos[k] });
   return fetch(CFG.servidor.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)})
-    .then(function(r){ return r.json() })
+    .then(function(r){ return r.text().then(function(t){
+      try{ return JSON.parse(t) }catch(e){ throw new Error('Respuesta inesperada del script (HTTP '+r.status+'): '+t.replace(/\s+/g,' ').slice(0,160)) }
+    }) })
     .then(function(j){
       if(j && j.error==='clave'){
         if(reintento) throw new Error('clave');
