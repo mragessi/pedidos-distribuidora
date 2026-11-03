@@ -9,6 +9,6 @@ window.CONFIG = {
   // en tu Drive y se cuenta cuántos dispositivos usan la app.
   // Si la dejás vacía, la app funciona igual pero cada persona tiene que mandar su pedido por enlace.
   servidor: {
-    url: ""
+    url: "https://script.google.com/macros/s/AKfycbxLyh3TfwGVTM3TMTQ90SjA1iQpNieH5LnnMT58N5afEDqh9z6gYwhFJuu7gfUTe7Ly/exec"
   }
 };
